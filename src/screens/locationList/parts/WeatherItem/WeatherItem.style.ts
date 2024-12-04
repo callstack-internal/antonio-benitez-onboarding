@@ -4,13 +4,20 @@ export const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: 6,
-  },
-  dataContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    flex: 4,
+    paddingVertical: 6,
+    flex: 1,
+    borderBottomWidth: 1,
+    borderBottomColor: '#d3d3d3',
+  },
+  iconContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 5,
+  },
+  cityContainer: {
+    flex: 1,
   },
   cityTitle: {
     fontSize: 20,
@@ -20,8 +27,13 @@ export const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#505050',
   },
-  icon: {width: 45, height: 45, marginHorizontal: 15},
+  icon: {
+    width: 45,
+    height: 45,
+    marginHorizontal: 15,
+  },
   temperatureContainer: {
+    alignSelf: 'center',
     backgroundColor: '#75c5cd',
     borderRadius: 25,
     paddingHorizontal: 14,
@@ -33,7 +45,7 @@ export const styles = StyleSheet.create({
     fontSize: 19,
   },
   arrow: {
-    flex: 1,
+    marginHorizontal: 15,
     fontSize: 24,
   },
 });
