@@ -5,13 +5,15 @@ import {
   FlatList,
   ActivityIndicator,
   Text,
+  ListRenderItem,
 } from 'react-native';
-import React from 'react';
+import React, {useCallback} from 'react';
 
 import {useGroupWeatherGetQuery} from '@services/api/WeatherApi';
 
 import {styles} from './LocationListScreen.styles';
 import {WeatherItem} from './parts/WeatherItem/WeatherItem.tsx';
+import {CityWeather} from '@services/api/WeatherApi/types';
 
 const CITY_IDS = [
   703448, // Kyiv, UA
@@ -37,6 +39,11 @@ const LocationListScreen = () => {
       ? styles.backgroundStyleDark
       : styles.backgroundStyleLight,
   };
+
+  const renderItem: ListRenderItem<CityWeather> = useCallback(
+    ({item}) => <WeatherItem key={item.id} item={item} />,
+    [],
+  );
 
   if (isLoading) {
     return (
@@ -86,7 +93,7 @@ const LocationListScreen = () => {
       <FlatList
         data={data.list}
         keyExtractor={item => item.id.toString()}
-        renderItem={({item}) => <WeatherItem key={item.id} item={item} />}
+        renderItem={renderItem}
       />
     </SafeAreaView>
   );

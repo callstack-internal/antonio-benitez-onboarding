@@ -1,13 +1,20 @@
 import type {CityWeather} from '@services/api/WeatherApi/types';
 
-import React, {useCallback} from 'react';
-import {Text, TouchableOpacity, useColorScheme} from 'react-native';
+import React, {useCallback, useMemo} from 'react';
+import {
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+  useColorScheme,
+} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 
 import {RootStackParamList} from '@navigation/RootNavigatorParamList';
 
 import {styles} from './WeatherItem.style.ts';
+import {weatherIconUriGet} from '@helpers/WeatherApi/weatherIconUriGet.ts';
 
 type Props = {
   item: CityWeather;
@@ -21,17 +28,31 @@ const WeatherItem: React.FC<Props> = ({item}) => {
     navigation.navigate('LocationDetails');
   }, [navigation]);
 
+  const weatherIcon = useMemo(
+    () => ({uri: weatherIconUriGet(item.weather?.[0]?.icon)}),
+    [item.weather],
+  );
+
+  const weather = useMemo(() => item.weather?.[0]?.main ?? '', [item.weather]);
+
   return (
-    <TouchableOpacity onPress={handleItemPress} style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {item.name}
-      </Text>
+    <TouchableOpacity onPress={handleItemPress} style={styles.buttonContainer}>
+      <View style={styles.dataContainer}>
+        <Image source={weatherIcon} resizeMode="cover" style={styles.icon} />
+        <View>
+          <Text
+            style={[styles.cityTitle]}
+            numberOfLines={1}
+            ellipsizeMode="tail">
+            {item.name}
+          </Text>
+          <Text style={[styles.cityWeather]}>{weather}</Text>
+        </View>
+        <View style={styles.temperatureContainer}>
+          <Text style={[styles.temperatureText]}>{item.main.temp} ºF</Text>
+        </View>
+      </View>
+      <Text style={styles.arrow}>→</Text>
     </TouchableOpacity>
   );
 };
