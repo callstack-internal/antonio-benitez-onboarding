@@ -1,7 +1,7 @@
-import React, {PropsWithChildren} from "react";
-import {Text, useColorScheme, View} from "react-native";
-import {Colors} from "react-native/Libraries/NewAppScreen";
-import {styles} from "./Sections.style.ts";
+import React, {PropsWithChildren} from 'react';
+import {Text, useColorScheme, View} from 'react-native';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {styles} from './Sections.style.ts';
 
 type Props = PropsWithChildren<{
     title: string;
@@ -32,6 +32,6 @@ const Section: React.FC<Props> = ({children, title})=>{
             </Text>
         </View>
     );
-}
+};
 
-export {Section}
+export {Section};
