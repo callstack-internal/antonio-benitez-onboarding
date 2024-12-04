@@ -12,8 +12,8 @@ import React, {useCallback} from 'react';
 import {useGroupWeatherGetQuery} from '@services/api/WeatherApi';
 
 import {styles} from './LocationListScreen.styles';
-import {WeatherItem} from './parts/WeatherItem/WeatherItem.tsx';
 import {CityWeather} from '@services/api/WeatherApi/types';
+import {TouchableWeatherItem} from './parts/TouchableWeatherItem/TouchableWeatherItem';
 
 const CITY_IDS = [
   703448, // Kyiv, UA
@@ -41,7 +41,7 @@ const LocationListScreen = () => {
   };
 
   const renderItem: ListRenderItem<CityWeather> = useCallback(
-    ({item}) => <WeatherItem key={item.id} item={item} />,
+    ({item}) => <TouchableWeatherItem key={item.id} item={item} />,
     [],
   );
 

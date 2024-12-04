@@ -7,8 +7,6 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 6,
     flex: 1,
-    borderBottomWidth: 1,
-    borderBottomColor: '#d3d3d3',
   },
   iconContainer: {
     flex: 1,
@@ -38,14 +36,11 @@ export const styles = StyleSheet.create({
     borderRadius: 25,
     paddingHorizontal: 14,
     paddingVertical: 6,
+    marginRight: 15,
   },
   temperatureText: {
     fontWeight: 'normal',
     color: 'white',
     fontSize: 19,
-  },
-  arrow: {
-    marginHorizontal: 15,
-    fontSize: 24,
   },
 });
