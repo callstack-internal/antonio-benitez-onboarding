@@ -7,8 +7,19 @@ import LocationListScreen from '../screens/locationList/LocationListScreen';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>({
   initialRouteName: 'LocationList',
+  screenOptions: {
+    headerTintColor: 'black',
+    headerStyle: {
+      backgroundColor: '#d5d5d5',
+    },
+  },
   screens: {
-    LocationList: LocationListScreen,
+    LocationList: {
+      screen: LocationListScreen,
+      options: {
+        title: 'Weather',
+      },
+    },
   },
 });
 
