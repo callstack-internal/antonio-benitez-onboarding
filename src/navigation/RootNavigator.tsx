@@ -24,6 +24,9 @@ const RootStack = createNativeStackNavigator<RootStackParamList>({
     },
     LocationDetails: {
       screen: LocationDetailsScreen,
+      options: {
+        title: 'Details',
+      },
     },
   },
 });

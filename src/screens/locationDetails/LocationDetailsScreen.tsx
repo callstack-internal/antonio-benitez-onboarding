@@ -16,9 +16,23 @@ import React from 'react';
 
 import {Section} from './parts/Section/Section';
 import {styles} from './LocationDetailsScreen.styles.ts';
+import {RouteProp} from '@react-navigation/native';
+import {RootStackParamList} from '@navigation/RootNavigatorParamList.js';
+import {WeatherItem} from '@components/WeatherItem/WeatherItem.tsx';
 
-const LocationDetailsScreen = () => {
+type LocationDetailsScreenRouteProp = RouteProp<
+  RootStackParamList,
+  'LocationDetails'
+>;
+
+const LocationDetailsScreen = ({
+  route,
+}: {
+  route: LocationDetailsScreenRouteProp;
+}) => {
   const isDarkMode = useColorScheme() === 'dark';
+
+  const {cityWeather} = route.params;
 
   const backgroundStyle = {
     backgroundColor: isDarkMode
@@ -33,23 +47,7 @@ const LocationDetailsScreen = () => {
         backgroundColor={backgroundStyle.backgroundColor.backgroundColor}
       />
       <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <Header />
-        <View>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
+        <WeatherItem item={cityWeather} />
       </ScrollView>
     </SafeAreaView>
   );
