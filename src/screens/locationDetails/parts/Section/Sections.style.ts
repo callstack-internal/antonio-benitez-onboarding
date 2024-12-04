@@ -1,17 +1,24 @@
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#d3d3d3',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  title: {
+    fontSize: 20,
+    fontWeight: '400',
+    flex: 1,
   },
-  sectionDescription: {
-    marginTop: 8,
+  content: {
     fontSize: 18,
     fontWeight: '400',
+    alignSelf: 'center',
+    color: 'rgba(151,151,151,0.76)',
   },
 });
