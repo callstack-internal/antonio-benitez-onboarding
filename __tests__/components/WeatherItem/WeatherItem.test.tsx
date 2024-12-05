@@ -6,19 +6,6 @@ import {
   WeatherItemProps,
 } from '@components/WeatherItem/WeatherItem.tsx';
 
-jest.mock('@components/WeatherItem/WeatherItem.style.ts', () => ({
-  styles: {
-    buttonContainer: {},
-    iconContainer: {},
-    icon: {},
-    cityContainer: {},
-    cityTitle: {},
-    cityWeather: {},
-    temperatureContainer: {},
-    temperatureText: {},
-  },
-}));
-
 jest.mock('@helpers/WeatherApi/weatherIconUriGet.ts', () => ({
   weatherIconUriGet: jest.fn(
     (icon: string) => `https://example.com/${icon}.png`,
