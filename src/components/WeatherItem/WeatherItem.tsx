@@ -3,8 +3,9 @@ import type {CityWeather} from '@services/api/WeatherApi/types';
 import React, {useMemo} from 'react';
 import {Image, Text, View} from 'react-native';
 
-import {styles} from './WeatherItem.style.ts';
 import {weatherIconUriGet} from '@helpers/WeatherApi/weatherIconUriGet.ts';
+
+import {styles} from './WeatherItem.style.ts';
 
 export type WeatherItemProps = {
   item: CityWeather;
