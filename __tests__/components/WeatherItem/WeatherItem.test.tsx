@@ -1,5 +1,6 @@
 import React from 'react';
 import {render, screen} from '@testing-library/react-native';
+
 import {
   WeatherItem,
   WeatherItemProps,
@@ -64,7 +65,7 @@ describe('WeatherItem Component', () => {
 
     expect(screen.getByText('Clear')).toBeTruthy();
 
-    expect(screen.getByText('22 ºC')).toBeTruthy();
+    expect(screen.getByText('22 ºF')).toBeTruthy();
   });
 
   it('renders the weather icon', () => {
