@@ -7,7 +7,18 @@ module.exports = {
       'module-resolver',
       {
         root: ['./src'],
-        extensions: ['.ts', '.tsx', '.json'],
+        extensions: [
+          '.ios.js',
+          '.ios.ts',
+          '.ios.tsx',
+          '.android.js',
+          '.android.ts',
+          '.android.tsx',
+          '.js',
+          '.ts',
+          '.tsx',
+          '.json',
+        ],
         alias: {
           '@components': './src/components',
           '@helpers': './src/helpers',
@@ -16,6 +27,7 @@ module.exports = {
           '@screens': './src/screens',
           '@services': './src/services',
           '@types': './src/types',
+          'device-location-package': './device-location-package',
         },
       },
     ],

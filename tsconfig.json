@@ -15,6 +15,7 @@
       "@screens/*": ["screens/*"],
       "@services/*": ["services/*"],
       "@types/*": ["types/*"],
+      "device-location-package": ["./device-location-package"]
     },
   }
 }
