@@ -20,7 +20,12 @@ const WeatherItem: React.FC<WeatherItemProps> = ({item}) => {
   return (
     <View style={styles.buttonContainer}>
       <View style={styles.iconContainer}>
-        <Image source={weatherIcon} resizeMode="cover" style={styles.icon} />
+        <Image
+          source={weatherIcon}
+          resizeMode="cover"
+          style={styles.icon}
+          testID="weather-icon"
+        />
         <View style={styles.cityContainer}>
           <Text style={styles.cityTitle} numberOfLines={3} ellipsizeMode="tail">
             {item.name}
