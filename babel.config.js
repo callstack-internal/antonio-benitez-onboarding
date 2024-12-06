@@ -27,7 +27,6 @@ module.exports = {
           '@screens': './src/screens',
           '@services': './src/services',
           '@types': './src/types',
-          'device-location-package': './device-location-package',
         },
       },
     ],
