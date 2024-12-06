@@ -1,10 +1,9 @@
-// src/mocks/handlers/weatherHandlers.js
 import {http} from 'msw';
 
-const mockCityWeather = id => ({
+const mockCityWeather = (id, lat, lon) => ({
   coord: {
-    lon: Math.random() * 180 - 90,
-    lat: Math.random() * 180 - 90,
+    lon: lon || Math.random() * 180 - 90,
+    lat: lat || Math.random() * 180 - 90,
   },
   sys: {
     country: 'US',
@@ -57,6 +56,29 @@ export const weatherHandlers = [
         cnt: cityIdsArray.length,
         list: cityIdsArray.map(id => mockCityWeather(id)),
       };
+
+      return res(ctx.status(200), ctx.json(mockResponse));
+    },
+  ),
+
+  http.get(
+    `${process.env.OPEN_WEATHER_MAP_API_BASE_URL}weather`,
+    (req, res, ctx) => {
+      const lat = req.url.searchParams.get('lat');
+      const lon = req.url.searchParams.get('lon');
+
+      if (!lat || !lon) {
+        return res(
+          ctx.status(400),
+          ctx.json({error: 'Missing latitude or longitude'}),
+        );
+      }
+
+      const mockResponse = mockCityWeather(
+        Math.floor(Math.random() * 1000),
+        parseFloat(lat),
+        parseFloat(lon),
+      );
 
       return res(ctx.status(200), ctx.json(mockResponse));
     },
