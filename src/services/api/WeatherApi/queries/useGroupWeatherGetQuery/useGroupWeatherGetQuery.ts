@@ -23,7 +23,7 @@ const fetchGroupWeather = async (
 
 const useGroupWeatherGetQuery = (cityIds: number[]) =>
   useQuery<GroupWeatherResponse>({
-    queryKey: ['weather', cityIds],
+    queryKey: ['weather', 'group', cityIds],
     queryFn: () => fetchGroupWeather(cityIds),
   });
 
