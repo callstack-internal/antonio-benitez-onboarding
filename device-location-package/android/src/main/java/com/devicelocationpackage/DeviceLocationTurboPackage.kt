@@ -9,26 +9,20 @@ import com.facebook.react.module.model.ReactModuleInfoProvider
 import com.facebook.react.turbomodule.core.interfaces.TurboModule
 
 class DeviceLocationTurboPackage : TurboReactPackage() {
-    /**
-     * Initialize and export modules based on the name of the required module
-     */
+
     override fun getModule(name: String, reactContext: ReactApplicationContext): NativeModule? {
-        return null
+        return when (name) {
+            DeviceLocationModule.NAME -> DeviceLocationModule(reactContext)
+            else -> null
+        }
     }
 
-    /**
-     * Declare info about exported modules
-     */
     override fun getReactModuleInfoProvider(): ReactModuleInfoProvider {
-        /**
-         * Here declare the array of exported modules
-         */
         val moduleList: Array<Class<out NativeModule?>> = arrayOf(
+            DeviceLocationModule::class.java
         )
         val reactModuleInfoMap: MutableMap<String, ReactModuleInfo> = HashMap()
-        /**
-         * And here just iterate on that array and produce the info provider instance
-         */
+
         for (moduleClass in moduleList) {
             val reactModule = moduleClass.getAnnotation(ReactModule::class.java) ?: continue
             reactModuleInfoMap[reactModule.name] =

@@ -78,4 +78,6 @@ dependencies {
     } else {
         implementation("com.facebook.react:react-native:+") // From node_modules
     }
+
+    implementation("com.google.android.gms:play-services-location:21.0.1")
 }
