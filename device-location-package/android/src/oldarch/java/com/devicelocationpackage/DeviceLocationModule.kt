@@ -18,6 +18,6 @@ class DeviceLocationModule(reactContext: ReactApplicationContext) : ReactContext
     }
 
     companion object {
-        const val NAME = DeviceLocationModuleImpl.NAME
+        const val NAME = "DeviceLocationModule"
     }
 }

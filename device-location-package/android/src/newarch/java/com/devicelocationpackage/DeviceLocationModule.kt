@@ -15,6 +15,6 @@ class DeviceLocationModule(reactContext: ReactApplicationContext) : NativeDevice
     }
 
     companion object {
-        const val NAME = DeviceLocationModuleImpl.NAME
+        const val NAME = "DeviceLocationModule"
     }
 }
