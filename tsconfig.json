@@ -7,6 +7,7 @@
     "baseUrl": "src",
     "strict": true,
     "types": ["jest", "node"],
+    "typeRoots": ["node_modules/@types"],
     "paths": {
       "@components/*": ["components/*"],
       "@helpers/*": ["helpers/*"],
@@ -15,7 +16,6 @@
       "@screens/*": ["screens/*"],
       "@services/*": ["services/*"],
       "@types/*": ["types/*"],
-      "device-location-package": ["./device-location-package"]
-    },
+    }
   }
 }
