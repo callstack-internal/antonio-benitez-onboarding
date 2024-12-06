@@ -11,6 +11,7 @@
     "paths": {
       "@components/*": ["components/*"],
       "@helpers/*": ["helpers/*"],
+      "@hooks/*": ["hooks/*"],
       "@mocks/*": ["mocks/*"],
       "@navigation/*": ["navigation/*"],
       "@screens/*": ["screens/*"],

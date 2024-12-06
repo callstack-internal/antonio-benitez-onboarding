@@ -12,8 +12,6 @@ const fetchLocationWeather = async (
     `${OPEN_WEATHER_MAP_API_BASE_URL}weather?lat=${loc.latitude}&lon=${loc.longitude}&appid=${OPEN_WEATHER_MAP_API_KEY}`,
   );
 
-  console.log(response);
-
   if (!response.ok) {
     throw new Error('Error fetching weather data');
   }

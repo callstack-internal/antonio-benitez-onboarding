@@ -22,6 +22,7 @@ module.exports = {
         alias: {
           '@components': './src/components',
           '@helpers': './src/helpers',
+          '@hooks': './src/hooks',
           '@mocks': './src/mocks',
           '@navigation': './src/navigation',
           '@screens': './src/screens',
