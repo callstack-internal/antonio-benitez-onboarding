@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "description": "Retrieve device location",
   "react-native": "src",
+  "types": "src/index.d.ts",
   "source": "src",
   "main": "src",
   "module": "src",
