@@ -7,10 +7,22 @@ module.exports = {
       'module-resolver',
       {
         root: ['./src'],
-        extensions: ['.ts', '.tsx', '.json'],
+        extensions: [
+          '.ios.js',
+          '.ios.ts',
+          '.ios.tsx',
+          '.android.js',
+          '.android.ts',
+          '.android.tsx',
+          '.js',
+          '.ts',
+          '.tsx',
+          '.json',
+        ],
         alias: {
           '@components': './src/components',
           '@helpers': './src/helpers',
+          '@hooks': './src/hooks',
           '@mocks': './src/mocks',
           '@navigation': './src/navigation',
           '@screens': './src/screens',

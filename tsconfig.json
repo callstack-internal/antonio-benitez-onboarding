@@ -7,14 +7,16 @@
     "baseUrl": "src",
     "strict": true,
     "types": ["jest", "node"],
+    "typeRoots": ["node_modules/@types"],
     "paths": {
       "@components/*": ["components/*"],
       "@helpers/*": ["helpers/*"],
+      "@hooks/*": ["hooks/*"],
       "@mocks/*": ["mocks/*"],
       "@navigation/*": ["navigation/*"],
       "@screens/*": ["screens/*"],
       "@services/*": ["services/*"],
       "@types/*": ["types/*"],
-    },
+    }
   }
 }

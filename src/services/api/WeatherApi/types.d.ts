@@ -63,3 +63,5 @@ export type GroupWeatherResponse = {
   cnt: number;
   list: CityWeather[];
 };
+
+export type CityWeatherResponse = CityWeather;

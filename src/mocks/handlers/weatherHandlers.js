@@ -1,10 +1,9 @@
-// src/mocks/handlers/weatherHandlers.js
-import {http} from 'msw';
+import {http, HttpResponse} from 'msw';
 
-const mockCityWeather = id => ({
+const mockCityWeather = (id, lat, lon) => ({
   coord: {
-    lon: Math.random() * 180 - 90,
-    lat: Math.random() * 180 - 90,
+    lon: lon || Math.random() * 180 - 90,
+    lat: lat || Math.random() * 180 - 90,
   },
   sys: {
     country: 'US',
@@ -21,8 +20,8 @@ const mockCityWeather = id => ({
     },
   ],
   main: {
-    temp: 25 + Math.random() * 5,
-    feels_like: 24 + Math.random() * 5,
+    temp: Math.floor((275 + Math.random() * 5) * 100) / 100,
+    feels_like: Math.floor((274 + Math.random() * 5) * 100) / 100,
     temp_min: 23,
     temp_max: 27,
     pressure: 1013,
@@ -45,7 +44,10 @@ export const weatherHandlers = [
   http.get(
     `${process.env.OPEN_WEATHER_MAP_API_BASE_URL}group`,
     (req, res, ctx) => {
-      const cityIds = req.url.searchParams.get('id');
+      const requestUrl = req.request?.url || '';
+
+      const url = new URL(requestUrl);
+      const cityIds = url.searchParams.get('id');
 
       if (!cityIds) {
         return res(ctx.status(400), ctx.json({error: 'Missing city IDs'}));
@@ -58,7 +60,32 @@ export const weatherHandlers = [
         list: cityIdsArray.map(id => mockCityWeather(id)),
       };
 
-      return res(ctx.status(200), ctx.json(mockResponse));
+      return HttpResponse.json(mockResponse);
+    },
+  ),
+
+  http.get(
+    `${process.env.OPEN_WEATHER_MAP_API_BASE_URL}weather`,
+    (req, res, ctx) => {
+      const requestUrl = req.request?.url || '';
+
+      const url = new URL(requestUrl);
+      const lat = url.searchParams.get('lat');
+      const lon = url.searchParams.get('lon');
+
+      if (!lat || !lon) {
+        return HttpResponse.text('Missing latitude or longitude', {
+          status: 400,
+        });
+      }
+
+      const mockResponse = mockCityWeather(
+        Math.floor(Math.random() * 1000),
+        parseFloat(lat),
+        parseFloat(lon),
+      );
+
+      return HttpResponse.json(mockResponse);
     },
   ),
 ];

@@ -5,7 +5,6 @@ import {
   FlatList,
   ActivityIndicator,
   Text,
-  ListRenderItem,
 } from 'react-native';
 import React, {useCallback, useMemo} from 'react';
 
@@ -15,6 +14,8 @@ import {CityWeather} from '@services/api/WeatherApi/types';
 
 import {TouchableWeatherItem} from './parts/TouchableWeatherItem/TouchableWeatherItem';
 import {styles} from './LocationListScreen.styles';
+
+import {UserLocationWeather} from '@screens/locationList/parts/UserLocationWeather/UserLocationWeather.tsx';
 
 const LocationListScreen = () => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -27,8 +28,8 @@ const LocationListScreen = () => {
       : styles.backgroundStyleLight,
   };
 
-  const renderItem: ListRenderItem<CityWeather> = useCallback(
-    ({item}) => <TouchableWeatherItem key={item.id} item={item} />,
+  const renderItem = useCallback(
+    (item: CityWeather) => <TouchableWeatherItem key={item.id} item={item} />,
     [],
   );
 
@@ -63,7 +64,7 @@ const LocationListScreen = () => {
       <FlatList
         data={data.list}
         keyExtractor={item => item.id.toString()}
-        renderItem={renderItem}
+        renderItem={({item}) => renderItem(item)}
         testID="location-list-data"
       />
     );
@@ -75,6 +76,7 @@ const LocationListScreen = () => {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor.backgroundColor}
       />
+      <UserLocationWeather />
       {content}
     </SafeAreaView>
   );
