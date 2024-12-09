@@ -1,24 +1,38 @@
 import {
   SafeAreaView,
-  ScrollView,
   StatusBar,
-  Text,
-  View,
   useColorScheme,
+  FlatList,
+  ActivityIndicator,
+  Text,
+  ListRenderItem,
 } from 'react-native';
-import {
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-import React from 'react';
+import React, {useCallback} from 'react';
 
-import {Section} from './parts/Section/Section';
+import {useGroupWeatherGetQuery} from '@services/api/WeatherApi';
+
 import {styles} from './LocationListScreen.styles';
+import {CityWeather} from '@services/api/WeatherApi/types';
+import {TouchableWeatherItem} from './parts/TouchableWeatherItem/TouchableWeatherItem';
+
+const CITY_IDS = [
+  703448, // Kyiv, UA
+  692194, // Sumy, UA
+  756135, // Warsaw, PL
+  3081368, // Wrocław, PL
+  3067696, // Prague, CZ
+  3077916, // České Budějovice, CZ
+  2950159, // Berlin, DE
+  2867714, // Munich, DE
+  3247449, // Aachen, DE
+  5815135, // Washington, US
+  5128581, // New York City, US
+];
 
 const LocationListScreen = () => {
   const isDarkMode = useColorScheme() === 'dark';
+
+  const {data, error, isLoading} = useGroupWeatherGetQuery(CITY_IDS);
 
   const backgroundStyle = {
     backgroundColor: isDarkMode
@@ -26,31 +40,61 @@ const LocationListScreen = () => {
       : styles.backgroundStyleLight,
   };
 
+  const renderItem: ListRenderItem<CityWeather> = useCallback(
+    ({item}) => <TouchableWeatherItem key={item.id} item={item} />,
+    [],
+  );
+
+  if (isLoading) {
+    return (
+      <SafeAreaView
+        style={[
+          styles.container,
+          backgroundStyle.backgroundColor.backgroundColor,
+        ]}>
+        <ActivityIndicator size="large" color={isDarkMode ? '#FFF' : '#000'} />
+      </SafeAreaView>
+    );
+  }
+
+  if (error) {
+    return (
+      <SafeAreaView
+        style={[
+          styles.container,
+          backgroundStyle.backgroundColor.backgroundColor,
+        ]}>
+        <Text style={styles.errorText}>
+          Failed to load weather data: {String(error)}
+        </Text>
+      </SafeAreaView>
+    );
+  }
+
+  if (!data || data?.list.length === 0) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <StatusBar
+          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+          backgroundColor={backgroundStyle.backgroundColor.backgroundColor}
+        />
+        <Text style={{textAlign: 'center'}}>No weather data available</Text>
+      </SafeAreaView>
+    );
+  }
+
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.safeAreaView}>
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor.backgroundColor}
       />
-      <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <Header />
-        <View>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
+
+      <FlatList
+        data={data.list}
+        keyExtractor={item => item.id.toString()}
+        renderItem={renderItem}
+      />
     </SafeAreaView>
   );
 };
