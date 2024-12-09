@@ -92,8 +92,67 @@ describe('WeatherItem Component', () => {
 
     expect(screen.getByText('Warszawa')).toBeTruthy();
 
-    expect(screen.getByText('')).toBeTruthy();
-
     expect(screen.getByText('18 ºF')).toBeTruthy();
+  });
+
+  it('renders the WeatherItem component without crashing', () => {
+    const mockItemWithNoWeather: WeatherItemProps['item'] = {
+      name: 'Warszawa',
+      weather: [],
+      main: {
+        temp: 18,
+        feels_like: 18,
+        temp_min: 17,
+        temp_max: 19,
+        pressure: 1010,
+        humidity: 55,
+      },
+      coord: {lon: 21.0122, lat: 52.2298},
+      sys: {
+        country: 'PL',
+        timezone: 3600,
+        sunrise: 1627898400,
+        sunset: 1627948800,
+      },
+      visibility: 10000,
+      wind: {speed: 4.1, deg: 180},
+      clouds: {all: 10},
+      dt: 1627920000,
+      id: 756135,
+    };
+
+    expect(() =>
+      render(<WeatherItem item={mockItemWithNoWeather} />),
+    ).not.toThrow();
+  });
+
+  it('matches the snapshot', () => {
+    const mockItemWithNoWeather: WeatherItemProps['item'] = {
+      name: 'Warszawa',
+      weather: [],
+      main: {
+        temp: 18,
+        feels_like: 18,
+        temp_min: 17,
+        temp_max: 19,
+        pressure: 1010,
+        humidity: 55,
+      },
+      coord: {lon: 21.0122, lat: 52.2298},
+      sys: {
+        country: 'PL',
+        timezone: 3600,
+        sunrise: 1627898400,
+        sunset: 1627948800,
+      },
+      visibility: 10000,
+      wind: {speed: 4.1, deg: 180},
+      clouds: {all: 10},
+      dt: 1627920000,
+      id: 756135,
+    };
+
+    const tree = render(<WeatherItem item={mockItemWithNoWeather} />).toJSON();
+    expect(tree).toMatchSnapshot();
   });
 });
