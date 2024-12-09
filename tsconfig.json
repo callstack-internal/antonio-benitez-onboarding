@@ -6,9 +6,11 @@
     "rootDir": ".",
     "baseUrl": "src",
     "strict": true,
+    "types": ["jest", "node"],
     "paths": {
       "@components/*": ["components/*"],
       "@helpers/*": ["helpers/*"],
+      "@mocks/*": ["mocks/*"],
       "@navigation/*": ["navigation/*"],
       "@screens/*": ["screens/*"],
       "@services/*": ["services/*"],

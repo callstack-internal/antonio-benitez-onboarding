@@ -22,7 +22,10 @@ const TouchableWeatherItem: React.FC<Props> = ({item}) => {
   }, [navigation, item]);
 
   return (
-    <TouchableOpacity onPress={handleItemPress} style={styles.container}>
+    <TouchableOpacity
+      onPress={handleItemPress}
+      style={styles.container}
+      testID="weather-item-button">
       <WeatherItem item={item} />
       <Text style={styles.arrow}>→</Text>
     </TouchableOpacity>
