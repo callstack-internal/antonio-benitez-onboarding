@@ -17,10 +17,16 @@ private_lane :certificates do
 end
 
 def commit(platform, version)
-  # Commit the version bump
-  sh("git add .")
-  sh("git commit -m 'Version Bump #{platform}: #{version}'")
+  sh("git add -A")
+
+  changes = `git diff --cached --name-only`
+  if changes.empty?
+    UI.user_error!("No changes to commit for #{platform} version #{version}. Please ensure changes are staged.")
+  else
+    sh("git commit -m 'Version Bump #{platform}: #{version}'")
+  end
 end
+
 
 desc 'Fetch current version from package.json'
 private_lane :fetch_current_version do
