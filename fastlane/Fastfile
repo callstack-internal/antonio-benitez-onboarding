@@ -1,0 +1,80 @@
+fastlane_version '2.53.1'
+
+desc 'Fetch certificates and provisioning profiles'
+private_lane :certificates do
+  match(
+    app_identifier: 'org.reactjs.native.example.WeatherOnboarding',
+    type: 'development',
+    readonly: true
+  )
+end
+
+def commit(platform, version)
+  # Ensure the git status is clean
+  # ensure_git_status_clean
+
+  # Commit the version bump
+  sh("git add .")
+  sh("git commit -m 'Version Bump #{platform}: #{version}'")
+end
+
+platform :ios do
+  desc 'Build the iOS application.'
+  lane :build do
+    certificates
+
+    # Uncomment this block to increment version
+    # version = increment_version_number_in_plist(
+    #   scheme: "WeatherOnboarding"
+    # )
+
+    clean_build_artifacts
+
+    sh("yarn codegen:ios")
+
+    cocoapods(
+      clean_install: true,
+      podfile: "./ios/Podfile"
+    )
+
+    # Build the app
+    gym(
+      scheme: 'WeatherOnboarding',
+      workspace: "./ios/WeatherOnboarding.xcworkspace",
+      clean: true,
+      export_method: "development",
+      derived_data_path: './build'
+    )
+
+    version = "1.0.0"
+
+    notification(
+      title: "iOS Build Version #{version} Complete",
+      message: "The build for WeatherOnboarding is finished.",
+      sound: "default"
+    )
+  end
+end
+
+platform :android do
+  desc 'Build the Android application.'
+  lane :build do
+    version = increment_version_number_in_plist(
+      scheme: "WeatherOnboarding"
+    )
+    # commit("Android", versionGeneral)
+
+    # Build the app
+    gradle(task: 'clean', project_dir: 'android/')
+    gradle(task: 'assemble', build_type: 'Release', project_dir: 'android/')
+
+    notification(
+      title: "Android Build Version #{version} Complete",
+      message: "The build for WeatherOnboarding is finished.",
+      sound: "default"
+    )
+
+    build_folder = File.expand_path("../android/app/build/outputs/apk/release")
+    sh("open '#{build_folder}'")
+  end
+end
