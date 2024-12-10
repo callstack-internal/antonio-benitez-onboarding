@@ -133,11 +133,11 @@ platform :ios do
   lane :build do
     version = ensure_version
 
-    increment_build_number(
+    build_number = increment_build_number(
       xcodeproj: './ios/WeatherOnboarding.xcodeproj'
     )
 
-    commit('iOS', "Build Number Increment: #{version}")
+    commit('iOS', "Build Number Increment: iOS - #{version} - (#{build_number})")
 
     cocoapods(
       clean_install: true,
@@ -153,7 +153,7 @@ platform :ios do
     )
 
     notification(
-      title: "iOS Build Version #{version} Complete",
+      title: "iOS Build Version #{version} - (#{build_number})  Complete",
       message: "The build for WeatherOnboarding is finished.",
       sound: "default"
     )
@@ -165,15 +165,15 @@ platform :android do
   lane :build do
     version = ensure_version
 
-    update_android_version_code
+    build_number = update_android_version_code
 
-    commit('Android', "Build Number Increment: #{version}")
+    commit('Android', "Build Number Increment: Android - #{version} - (#{build_number})")
 
     gradle(task: 'clean', project_dir: 'android/')
     gradle(task: 'assemble', build_type: 'Release', project_dir: 'android/')
 
     notification(
-      title: "Android Build Version #{version} Complete",
+      title: "Android Build Version #{version} - (#{build_number}) Complete",
       message: "The build for WeatherOnboarding is finished.",
       sound: "default"
     )

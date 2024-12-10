@@ -13,6 +13,17 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 # Available Actions
 
+### bump_versions
+
+```sh
+[bundle exec] fastlane bump_versions
+```
+
+Bump versions for iOS and Android
+
+----
+
+
 ## iOS
 
 ### ios build
