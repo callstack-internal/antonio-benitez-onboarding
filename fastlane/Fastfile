@@ -165,15 +165,15 @@ platform :android do
   lane :build do
     version = ensure_version
 
-    build_number = update_android_version_code
+    update_android_version_code
 
-    commit('Android', "Build Number Increment: Android - #{version} - (#{build_number})")
+    commit('Android', "Build Number Increment: Android - #{version}")
 
     gradle(task: 'clean', project_dir: 'android/')
     gradle(task: 'assemble', build_type: 'Release', project_dir: 'android/')
 
     notification(
-      title: "Android Build Version #{version} - (#{build_number}) Complete",
+      title: "Android Build Version #{version} Complete",
       message: "The build for WeatherOnboarding is finished.",
       sound: "default"
     )
