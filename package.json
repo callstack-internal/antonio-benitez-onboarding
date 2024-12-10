@@ -1,6 +1,6 @@
 {
   "name": "WeatherOnboarding",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "private": true,
   "scripts": {
     "android": "react-native run-android --active-arch-only",
