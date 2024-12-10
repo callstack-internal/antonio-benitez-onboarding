@@ -147,6 +147,11 @@ platform :ios do
 
     commit('iOS', version)
 
+     cocoapods(
+      clean_install: true,
+      podfile: "./ios/Podfile"
+     )
+
     gym(
       scheme: 'WeatherOnboarding',
       workspace: "./ios/WeatherOnboarding.xcworkspace",
