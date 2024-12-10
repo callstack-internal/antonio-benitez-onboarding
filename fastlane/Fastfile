@@ -2,6 +2,11 @@ require 'json'
 
 fastlane_version '2.53.1'
 
+before_all do
+    # Ensure the git status is clean
+    ensure_git_status_clean
+end
+
 desc 'Fetch certificates and provisioning profiles'
 private_lane :certificates do
   match(
@@ -12,9 +17,6 @@ private_lane :certificates do
 end
 
 def commit(platform, version)
-  # Ensure the git status is clean
-  ensure_git_status_clean
-
   # Commit the version bump
   sh("git add .")
   sh("git commit -m 'Version Bump #{platform}: #{version}'")
