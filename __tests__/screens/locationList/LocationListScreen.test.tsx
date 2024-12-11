@@ -1,153 +1,121 @@
 import React from 'react';
-import {render, screen, waitFor} from '@testing-library/react-native';
+import {render, screen} from '@testing-library/react-native';
 import {useNavigation} from '@react-navigation/native';
 
-import {http, HttpResponse} from 'msw';
 import LocationListScreen from '@screens/locationList/LocationListScreen.tsx';
-import {CityWeather} from '@services/api/WeatherApi/types';
-import {setupServer} from 'msw/native';
-import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 
-jest.mock(
-  '@screens/locationList/parts/UserLocationWeather/UserLocationWeather.tsx',
-  () => ({
-    UserLocationWeather: () => null,
+jest.mock('@hooks/useLocation.ts', () => ({
+  useLocation: () => ({
+    location: {
+      latitude: 37.7749,
+      longitude: -122.4194,
+    },
   }),
-);
+}));
 
-const DATA: {list: CityWeather[]} = {
-  list: [
-    {id: 1, name: 'City 1', main: {temp: 25}},
-    {id: 2, name: 'City 2', main: {temp: 30}},
-  ] as CityWeather[],
-};
+jest.mock('@services/api/WeatherApi', () => ({
+  useGroupWeatherGetQuery: jest.fn(),
+  useLocationWeatherGetQuery: jest.fn(),
+}));
+
+jest.mock('@services/api/WeatherApi', () => ({
+  useGroupWeatherGetQuery: jest.fn(),
+  useLocationWeatherGetQuery: jest.fn(),
+}));
 
 jest.mock('@react-navigation/native', () => ({
   ...jest.requireActual('@react-navigation/native'),
   useNavigation: jest.fn(),
 }));
 
-const server = setupServer();
+const mockUseGroupWeatherGetQuery = jest.requireMock(
+  '@services/api/WeatherApi',
+).useGroupWeatherGetQuery;
 
-beforeAll(() => server.listen({onUnhandledRequest: 'warn'}));
-afterEach(() => {
-  server.resetHandlers();
+const mockUseLocationWeatherGetQuery = jest.requireMock(
+  '@services/api/WeatherApi',
+).useLocationWeatherGetQuery;
+
+mockUseLocationWeatherGetQuery.mockReturnValue({
+  isLoading: false,
+  data: {id: 1, name: 'City local weather', main: {temp: 35}},
+  error: null,
 });
-afterAll(() => server.close());
 
 describe('LocationListScreen', () => {
   it('renders loading state', () => {
-    server.use(
-      http.get(
-        `${process.env.OPEN_WEATHER_MAP_API_BASE_URL}group`,
-        async () => {
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          return HttpResponse.json(DATA);
-        },
-      ),
-    );
+    mockUseGroupWeatherGetQuery.mockReturnValue({
+      isLoading: true,
+      data: null,
+      error: null,
+    });
 
-    const queryClient = new QueryClient();
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <LocationListScreen />
-      </QueryClientProvider>,
-    );
-
+    render(<LocationListScreen />);
     expect(screen.getByTestId('location-list-loading')).toBeTruthy();
   });
 
-  it('renders error state', async () => {
-    server.use(
-      http.get(
-        `${process.env.OPEN_WEATHER_MAP_API_BASE_URL}group`,
-        async () => {
-          return HttpResponse.text('Error', {status: 500});
-        },
-      ),
-    );
-    const queryClient = new QueryClient({
-      defaultOptions: {
-        queries: {
-          retry: 0,
-        },
-      },
+  it('renders error state', () => {
+    mockUseGroupWeatherGetQuery.mockReturnValue({
+      isLoading: false,
+      data: null,
+      error: 'Network error',
     });
 
-    render(
-      <QueryClientProvider client={queryClient}>
-        <LocationListScreen />
-      </QueryClientProvider>,
-    );
-    await waitFor(() => {
-      expect(screen.getByTestId('location-list-error')).toBeTruthy();
-    });
+    render(<LocationListScreen />);
+    expect(screen.getByTestId('location-list-error')).toBeTruthy();
   });
 
-  it('renders empty state', async () => {
-    server.use(
-      http.get(
-        `${process.env.OPEN_WEATHER_MAP_API_BASE_URL}group`,
-        async () => {
-          return HttpResponse.json({list: []});
-        },
-      ),
-    );
-
-    const queryClient = new QueryClient();
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <LocationListScreen />
-      </QueryClientProvider>,
-    );
-
-    await waitFor(() => screen.findByTestId('location-list-empty'), {
-      timeout: 5000,
+  it('renders empty state', () => {
+    mockUseGroupWeatherGetQuery.mockReturnValue({
+      isLoading: false,
+      data: {list: []},
+      error: null,
     });
 
-    await screen.findByTestId('location-list-empty');
-
-    expect(screen.getByText('No weather data available')).toBeTruthy();
+    render(<LocationListScreen />);
+    expect(screen.getByTestId('location-list-empty')).toBeTruthy();
   });
 
-  it('renders data state', async () => {
+  it('renders data state', () => {
+    const mockData = {
+      list: [
+        {id: 1, name: 'City 1', main: {temp: 25}},
+        {id: 2, name: 'City 2', main: {temp: 30}},
+      ],
+    };
+
+    mockUseGroupWeatherGetQuery.mockReturnValue({
+      isLoading: false,
+      data: mockData,
+      error: null,
+    });
+
     const mockNavigate = jest.fn();
     (useNavigation as jest.Mock).mockReturnValue({
       navigate: mockNavigate,
     });
 
-    server.use(
-      http.get(
-        `${process.env.OPEN_WEATHER_MAP_API_BASE_URL}group`,
-        async () => {
-          return HttpResponse.json(DATA);
-        },
-      ),
-    );
-
-    const queryClient = new QueryClient();
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <LocationListScreen />
-      </QueryClientProvider>,
-    );
-
-    await waitFor(() => screen.findByTestId('location-list-data'), {
-      timeout: 5000,
-    });
-
-    await screen.findByTestId(
-      'location-list-data',
-      {},
-      {
-        timeout: 5000,
-      },
-    );
-
+    render(<LocationListScreen />);
+    expect(screen.getByTestId('location-list-data')).toBeTruthy();
     expect(screen.getByText('City 1')).toBeTruthy();
     expect(screen.getByText('City 2')).toBeTruthy();
+  });
+
+  it('renders user location data', () => {
+    mockUseGroupWeatherGetQuery.mockReturnValue({
+      isLoading: false,
+      data: {list: []},
+      error: null,
+    });
+
+    const mockNavigate = jest.fn();
+    (useNavigation as jest.Mock).mockReturnValue({
+      navigate: mockNavigate,
+    });
+
+    render(<LocationListScreen />);
+    expect(screen.getByTestId('user-location-data')).toBeTruthy();
+    expect(screen.getByText('City local weather')).toBeTruthy();
+    expect(screen.getByText('35 ºF')).toBeTruthy();
   });
 });

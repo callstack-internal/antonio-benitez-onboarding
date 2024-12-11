@@ -2,7 +2,7 @@ import React, {useMemo} from 'react';
 import {ActivityIndicator, Text, useColorScheme, View} from 'react-native';
 
 import {useLocation} from '@hooks/useLocation.ts';
-import {useLocationWeatherGetQuery} from '@services/api/WeatherApi/queries/useLocationWeatherGetQuery/useLocationWeatherGetQuery.ts';
+import {useLocationWeatherGetQuery} from '@services/api/WeatherApi';
 import {TouchableWeatherItem} from '@screens/locationList/parts/TouchableWeatherItem/TouchableWeatherItem.tsx';
 
 import {styles} from './UserLocationWeather.style.ts';
@@ -23,14 +23,14 @@ const UserLocationWeather: React.FC = () => {
         <ActivityIndicator
           size="large"
           color={isDarkMode ? '#FFF' : '#000'}
-          testID="location-list-loading"
+          testID="user-location-loading"
         />
       );
     }
 
     if (locationQueryError) {
       return (
-        <Text style={styles.errorText} testID="location-list-error">
+        <Text style={styles.errorText} testID="user-location-error">
           Failed to load weather data: {String(locationQueryError)}
         </Text>
       );
@@ -38,14 +38,14 @@ const UserLocationWeather: React.FC = () => {
 
     if (!locationQueryData) {
       return (
-        <Text style={styles.noDataText} testID="location-list-empty">
+        <Text style={styles.noDataText} testID="user-location-empty">
           No weather data available for your location
         </Text>
       );
     }
 
     return (
-      <View style={styles.locationContainer}>
+      <View style={styles.locationContainer} testID="user-location-data">
         <Text style={styles.locationTitle}>Weather at your location</Text>
         <TouchableWeatherItem
           key={locationQueryData.id}
