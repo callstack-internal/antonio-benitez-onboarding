@@ -1,4 +1,4 @@
-name: Lint and Format Changed Files
+name: Lint and Format Check
 
 on:
   pull_request:
@@ -25,21 +25,10 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Get changed files
-        id: changed-files
-        run: |
-          git fetch origin ${{ github.base_ref }}
-          git diff --name-only origin/${{ github.base_ref }} > changed-files.txt
-          echo "CHANGED_FILES=$(cat changed-files.txt | grep -E '\.js$|\.ts$')" >> $GITHUB_ENV
+      - name: Run lint check
+        run: yarn lint
+        continue-on-error: false
 
-      - name: Run lint on changed files
-        if: env.CHANGED_FILES
-        run: |
-          echo "Linting files..."
-          yarn eslint $CHANGED_FILES
-
-      - name: Check formatting on changed files
-        if: env.CHANGED_FILES
-        run: |
-          echo "Checking formatting..."
-          yarn prettier --check $CHANGED_FILES
+      - name: Check formatting
+        run: yarn prettier --check .
+        continue-on-error: false
