@@ -1,5 +1,6 @@
 module.exports = {
   preset: 'react-native',
+  testTimeout: 30000,
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
   },

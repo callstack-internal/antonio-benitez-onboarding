@@ -1,7 +1,14 @@
 import {useState, useEffect} from 'react';
 import {DeviceLocationModule, Location} from 'device-location-package';
 
-const useLocation = () => {
+export type UseLocationResult = {
+  location: Location | null;
+  error: boolean;
+  isLoading: boolean;
+  fetchLocation: () => Promise<void>;
+};
+
+const useLocation = (): UseLocationResult => {
   const [location, setLocation] = useState<Location | null>(null);
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

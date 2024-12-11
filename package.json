@@ -6,6 +6,8 @@
     "android": "react-native run-android --active-arch-only",
     "ios": "react-native run-ios",
     "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "start": "react-native start",
     "test": "jest",
     "codegen:android": "./android/gradlew -p android generateCodegenArtifactsFromSchema",
