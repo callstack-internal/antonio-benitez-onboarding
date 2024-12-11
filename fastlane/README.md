@@ -1,5 +1,4 @@
-fastlane documentation
-----
+## fastlane documentation
 
 # Installation
 
@@ -21,8 +20,7 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 Bump versions for iOS and Android
 
-----
-
+---
 
 ## iOS
 
@@ -34,8 +32,7 @@ Bump versions for iOS and Android
 
 Build the iOS application.
 
-----
-
+---
 
 ## Android
 
@@ -47,7 +44,7 @@ Build the iOS application.
 
 Build the Android application.
 
-----
+---
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
 
