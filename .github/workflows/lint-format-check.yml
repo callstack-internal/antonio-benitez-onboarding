@@ -1,0 +1,45 @@
+name: Lint and Format Changed Files
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint-and-format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Read Node.js version from .nvmrc
+        id: nvmrc
+        run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_ENV
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Get changed files
+        id: changed-files
+        run: |
+          git fetch origin ${{ github.base_ref }}
+          git diff --name-only origin/${{ github.base_ref }} > changed-files.txt
+          echo "CHANGED_FILES=$(cat changed-files.txt | grep -E '\.js$|\.ts$')" >> $GITHUB_ENV
+
+      - name: Run lint on changed files
+        if: env.CHANGED_FILES
+        run: |
+          echo "Linting files..."
+          yarn eslint $CHANGED_FILES
+
+      - name: Check formatting on changed files
+        if: env.CHANGED_FILES
+        run: |
+          echo "Checking formatting..."
+          yarn prettier --check $CHANGED_FILES
