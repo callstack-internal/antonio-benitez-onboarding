@@ -8,6 +8,13 @@ import {CityWeather} from '@services/api/WeatherApi/types';
 import {setupServer} from 'msw/native';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 
+jest.mock(
+  '@screens/locationList/parts/UserLocationWeather/UserLocationWeather.tsx',
+  () => ({
+    UserLocationWeather: () => null,
+  }),
+);
+
 const DATA: {list: CityWeather[]} = {
   list: [
     {id: 1, name: 'City 1', main: {temp: 25}},
