@@ -131,9 +131,13 @@ describe('LocationListScreen', () => {
       </QueryClientProvider>,
     );
 
-    await screen.findByTestId('location-list-data', {
-      timeout: 3000,
-    });
+    await screen.findByTestId(
+      'location-list-data',
+      {},
+      {
+        timeout: 3000,
+      },
+    );
 
     expect(screen.getByText('City 1')).toBeTruthy();
     expect(screen.getByText('City 2')).toBeTruthy();
