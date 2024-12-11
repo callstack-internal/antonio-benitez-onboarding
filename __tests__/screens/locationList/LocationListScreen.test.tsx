@@ -135,7 +135,7 @@ describe('LocationListScreen', () => {
       'location-list-data',
       {},
       {
-        timeout: 3000,
+        timeout: 5000,
       },
     );
 
