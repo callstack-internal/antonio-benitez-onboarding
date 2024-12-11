@@ -1,4 +1,4 @@
-name: Run Tests on PR
+name: Run Tests Check
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  test:
+  test-check:
     runs-on: ubuntu-latest
 
     steps:

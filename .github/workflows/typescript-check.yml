@@ -1,4 +1,4 @@
-name: Lint and Prettier Check
+name: Run Tests on PR
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  lint-and-prettier-check:
+  typescript-check:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,14 +21,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
+          cache: 'yarn'
 
       - name: Install dependencies
         run: yarn install
 
-      - name: Run lint check
-        run: yarn lint
-        continue-on-error: false
-
-      - name: Check formatting
-        run: yarn prettier --check .
-        continue-on-error: false
+      - name: Check for TypeScript issues
+        run: yarn tsc --noEmit
