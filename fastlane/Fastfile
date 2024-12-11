@@ -1,0 +1,193 @@
+require 'json'
+
+fastlane_version '2.53.1'
+
+before_all do
+  # Ensure the git status is clean
+  ensure_git_status_clean
+end
+
+desc 'Fetch certificates and provisioning profiles'
+private_lane :certificates do
+  match(
+    app_identifier: 'org.reactjs.native.example.WeatherOnboarding',
+    type: 'development',
+    readonly: true
+  )
+end
+
+def commit(platform, message)
+  sh("git add -A")
+
+  changes = `git diff --cached --name-only`
+  if changes.empty?
+    UI.user_error!("No changes to commit for #{platform}. Please ensure changes are staged.")
+  else
+    sh("git commit -m '#{message}'")
+  end
+end
+
+desc 'Fetch current version from package.json'
+private_lane :fetch_current_version do
+  package_json_path = '../package.json'
+  package_json = JSON.parse(File.read(package_json_path))
+  package_json['version']
+end
+
+desc 'Fetch current version from Info.plist'
+private_lane :fetch_ios_version do
+  version = get_version_number_from_plist(
+    scheme: "WeatherOnboarding",
+    xcodeproj: './ios/WeatherOnboarding.xcodeproj'
+  )
+  version
+end
+
+desc 'Update Android versionName manually'
+private_lane :update_android_version_name do |options|
+  version = options[:version]
+  gradle_file_path = '../android/app/build.gradle'
+  gradle_content = File.read(gradle_file_path)
+
+  # Replace the versionName with the new version
+  updated_gradle_content = gradle_content.gsub(/versionName ".*"/, "versionName \"#{version}\"")
+
+  # Write back the updated content to the gradle file
+  File.write(gradle_file_path, updated_gradle_content)
+
+  UI.message("Android versionName updated to #{version} in build.gradle.")
+end
+
+desc 'Update Android versionCode manually'
+private_lane :update_android_version_code do
+  gradle_file_path = '../android/app/build.gradle'
+  gradle_content = File.read(gradle_file_path)
+
+  # Find and increment the versionCode
+  updated_gradle_content = gradle_content.gsub(/versionCode (\d+)/) do |match|
+    current_version_code = match.scan(/\d+/).first.to_i
+    "versionCode #{current_version_code + 1}"
+  end
+
+  # Write back the updated content to the gradle file
+  File.write(gradle_file_path, updated_gradle_content)
+
+  UI.message("Android versionCode incremented.")
+end
+
+desc 'Ensure synchronized versioning across iOS and Android'
+private_lane :ensure_version do
+  package_json_version = fetch_current_version
+  ios_version = fetch_ios_version
+
+  if ios_version != package_json_version
+    UI.user_error!("Version mismatch: iOS (#{ios_version}) and package.json (#{package_json_version}). Run the bump_versions lane to sync versions.")
+  end
+
+  ios_version
+end
+
+desc 'Bump versions for iOS and Android'
+lane :bump_versions do |options|
+  # Extract the bump type (default to 'patch')
+  bump_type = options[:bump_type] || 'patch'
+
+  # Validate bump type
+  unless %w[patch minor major].include?(bump_type)
+    UI.user_error!("Invalid bump type: #{bump_type}. Must be 'patch', 'minor', or 'major'.")
+  end
+
+  package_json_version = fetch_current_version
+  ios_version = fetch_ios_version
+
+  if package_json_version.nil? || package_json_version.empty?
+    UI.user_error!("package.json version is nil or empty. Please ensure the file exists and contains a valid version.")
+  end
+
+  if ios_version.nil? || ios_version.empty?
+    UI.user_error!("iOS Info.plist version is nil or empty. Please ensure the plist file exists and contains a valid version.")
+  end
+
+  version = increment_version_number_in_plist(
+    scheme: "WeatherOnboarding",
+    xcodeproj: './ios/WeatherOnboarding.xcodeproj',
+    bump_type: bump_type
+  )
+
+  increment_version_number_in_xcodeproj(
+    version_number: version,
+    scheme: "WeatherOnboarding",
+    xcodeproj: './ios/WeatherOnboarding.xcodeproj'
+  )
+
+  # Update package.json version
+  package_json_path = '../package.json'
+  package_json = JSON.parse(File.read(package_json_path))
+  package_json['version'] = version
+  File.write(package_json_path, JSON.pretty_generate(package_json))
+
+  UI.message("Versions bumped to #{version} using bump type: #{bump_type}.")
+
+  update_android_version_name(version: version)
+
+  commit('App', "Version Bump (#{bump_type}): #{version}")
+end
+
+
+platform :ios do
+  desc 'Build the iOS application.'
+  lane :build do
+    version = ensure_version
+
+    build_number = increment_build_number_in_plist(
+      scheme: "WeatherOnboarding",
+      xcodeproj: './ios/WeatherOnboarding.xcodeproj'
+    )
+
+    increment_build_number(
+      build_number: build_number,
+      xcodeproj: './ios/WeatherOnboarding.xcodeproj'
+    )
+
+    commit('iOS', "Build Number Increment: iOS - #{version} - (#{build_number})")
+
+    cocoapods(
+      clean_install: true,
+      podfile: "./ios/Podfile"
+    )
+
+    gym(
+      scheme: 'WeatherOnboarding',
+      workspace: "./ios/WeatherOnboarding.xcworkspace",
+      clean: true,
+      export_method: "development",
+      derived_data_path: './build'
+    )
+
+    notification(
+      title: "iOS Build Version #{version} - (#{build_number})  Complete",
+      message: "The build for WeatherOnboarding is finished.",
+      sound: "default"
+    )
+  end
+end
+
+platform :android do
+  desc 'Build the Android application.'
+  lane :build do
+    version = ensure_version
+
+    update_android_version_code
+
+    commit('Android', "Build Number Increment: Android - #{version}")
+
+    gradle(task: 'clean', project_dir: 'android/')
+    gradle(task: 'assemble', build_type: 'Release', project_dir: 'android/')
+
+    notification(
+      title: "Android Build Version #{version} Complete",
+      message: "The build for WeatherOnboarding is finished.",
+      sound: "default"
+    )
+  end
+end
