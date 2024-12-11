@@ -103,6 +103,10 @@ describe('LocationListScreen', () => {
       </QueryClientProvider>,
     );
 
+    await waitFor(() => screen.findByTestId('location-list-empty'), {
+      timeout: 5000,
+    });
+
     await screen.findByTestId('location-list-empty');
 
     expect(screen.getByText('No weather data available')).toBeTruthy();
@@ -130,6 +134,10 @@ describe('LocationListScreen', () => {
         <LocationListScreen />
       </QueryClientProvider>,
     );
+
+    await waitFor(() => screen.findByTestId('location-list-data'), {
+      timeout: 5000,
+    });
 
     await screen.findByTestId(
       'location-list-data',
