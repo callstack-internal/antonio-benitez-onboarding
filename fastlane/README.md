@@ -1,4 +1,5 @@
-## fastlane documentation
+fastlane documentation
+----
 
 # Installation
 
@@ -12,39 +13,15 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 # Available Actions
 
-### bump_versions
+### certificates
 
 ```sh
-[bundle exec] fastlane bump_versions
+[bundle exec] fastlane certificates
 ```
 
-Bump versions for iOS and Android
+Fetch certificates and provisioning profiles
 
----
-
-## iOS
-
-### ios build
-
-```sh
-[bundle exec] fastlane ios build
-```
-
-Build the iOS application.
-
----
-
-## Android
-
-### android build
-
-```sh
-[bundle exec] fastlane android build
-```
-
-Build the Android application.
-
----
+----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
 

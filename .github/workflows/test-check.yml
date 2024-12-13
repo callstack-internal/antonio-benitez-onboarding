@@ -1,4 +1,4 @@
-name: Run Tests Check
+name: Typescript Compilation
 
 on:
   pull_request:
